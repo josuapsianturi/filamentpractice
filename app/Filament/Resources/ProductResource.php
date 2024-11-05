@@ -27,7 +27,7 @@ class ProductResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->required()
-                    ->unique(),
+                    ->unique(ignorable: fn ($record) => $record),
                 TextInput::make('price')
                     ->required()
                     ->rule('numeric'),
@@ -41,7 +41,12 @@ class ProductResource extends Resource
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('price')->sortable(),
+                TextColumn::make('price')
+                    ->sortable()
+                    ->money('idr')
+                    ->getStateUsing(function (Product $record): float {
+                        return $record->price / 100;
+                    }),
             ])
             ->defaultSort('price', 'desc')
             ->filters([
