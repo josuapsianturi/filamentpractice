@@ -25,8 +25,12 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name'),
-                TextInput::make('price'),
+                TextInput::make('name')
+                    ->required()
+                    ->unique(),
+                TextInput::make('price')
+                    ->required()
+                    ->rule('numeric'),
             ]);
     }
 
@@ -34,9 +38,12 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('price'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('price')->sortable(),
             ])
+            ->defaultSort('price', 'desc')
             ->filters([
                 //
             ])
